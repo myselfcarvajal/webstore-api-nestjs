@@ -1,0 +1,36 @@
+services:
+  mongodb:
+    image: mongo:6.0
+    container_name: mongodb
+    ports:
+      - 27019:27017
+    networks:
+      - networks-webstore
+    volumes:
+      - mongodb_data:/data/db
+
+  api: 
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: api
+    volumes:
+      - ./src:/app/src
+    ports:
+      - '3000:3000'
+    environment:
+      PORT: 3000
+      MONGODB_CONNECTION: mongodb://mongodb:27017/osnet_webstore
+      ACCESS_SECRET: oMMEtN9wSizN6MIjy2nLTMxXFIj0RqeXpi1Vvfobom4=
+      ACCESS_EXPIRES_IN: 15m
+    networks:
+      - networks-webstore
+    depends_on:
+      - mongodb
+
+volumes:
+  mongodb_data:
+
+networks:
+  networks-webstore:
+    driver: bridge
