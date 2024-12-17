@@ -26,6 +26,39 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Environment Variables
+
+The application relies on the following environment variables defined in the `.env` file:
+
+- **`PORT`**  
+  The port on which the application will run (e.g., `3000`).
+
+- **`MONGODB_CONNECTION`**  
+  The MongoDB connection string used to connect to the database (e.g., `MONGODB_CONNECTION=mongodb://localhost:27017/osnet_webstore`).
+
+- **`ACCESS_SECRET`**  
+  A secret key for signing and verifying tokens (e.g., JWT authentication).
+
+## Run app with Docker
+
+```bash
+$ docker-compose up -d
+```
+
+## Seeding the Database
+
+1. Access the API container
+
+```bash
+docker exec -it <api-container-name> sh
+```
+
+2. Run the seed script:
+
+```bash
+$ npm run seed
+```
+
 ## Project setup
 
 ```bash
