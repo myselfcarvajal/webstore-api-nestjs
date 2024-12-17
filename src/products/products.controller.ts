@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -26,6 +27,7 @@ import {
   ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager';
 
 @ApiTags('products')
 @Controller('products')
@@ -47,8 +49,11 @@ export class ProductsController {
   }
 
   @Public()
-  @ApiOkResponse({ description: 'Ok' })
   @Get()
+  @UseInterceptors(CacheInterceptor)
+  @CacheKey('all-products')
+  @CacheTTL(5000) // Cache expiration time in milliseconds
+  @ApiOkResponse({ description: 'Ok' })
   async findAll() {
     return this.productsService.findAll();
   }
