@@ -25,13 +25,13 @@ export class CreateUserDto {
   @IsString()
   readonly surname: string;
 
-  @ApiProperty({ example: 'will@gmail.com' })
+  @ApiProperty({ example: 'willdouglas@gmail.com' })
   @IsEmail()
   @IsNotEmpty()
   readonly email: string;
 
   @ApiProperty({
-    example: 'my-secret-password',
+    example: 'password',
     description: 'The password of the user (maximum 22 characters)',
   })
   @IsNotEmpty()
@@ -42,7 +42,7 @@ export class CreateUserDto {
   readonly password: string;
 
   @ApiProperty({
-    example: 'cliente',
+    example: 'admin',
   })
   @IsNotEmpty()
   @IsEnum(Role, {

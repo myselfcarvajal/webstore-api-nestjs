@@ -17,8 +17,10 @@ export class UsersService {
   ) {}
   async create(user: CreateUserDto): Promise<User> {
     const alredyExist = await this.userModel.exists({ email: user.email });
-    if (alredyExist)
+
+    if (alredyExist) {
       throw new ConflictException(`The email ${user.email} already exists`);
+    }
 
     const passwordHash = await hash(user.password, 10);
     const userToCreate: User = { ...user, password: passwordHash };
@@ -50,7 +52,7 @@ export class UsersService {
     return user;
   }
 
-  async remove(id: string) {
+  async remove(id: string): Promise<User> {
     const user = await this.userModel.findByIdAndDelete({ _id: id });
 
     if (!user) throw new NotFoundException(`User with id ${id} not found`);
