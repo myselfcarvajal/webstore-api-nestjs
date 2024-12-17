@@ -1,28 +1,56 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/auth.dto';
+import { RegisterDto, SigninDto } from './dto/auth.dto';
+import { Public } from 'src/common/decorator/public.decorator';
+import {
+  ApiBadRequestResponse,
+  ApiConflictResponse,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
+import { AuthSwagger } from 'src/common/decorator/auth-swagger.decorator';
+import { GetCurrentUser } from 'src/common/decorator/get-current-user.decorator';
+import { User } from 'src/users/schema/user.schema';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post()
-  create(@Body() createAuthDto: CreateAuthDto) {
-    return this.authService.create(createAuthDto);
+  @Get('me')
+  @AuthSwagger()
+  @ApiOkResponse({
+    description: 'OK',
+  })
+  getMe(@GetCurrentUser() user: User) {
+    return user;
   }
 
-  @Get()
-  findAll() {
-    return this.authService.findAll();
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({ description: 'Ok' })
+  @ApiUnauthorizedResponse({ description: 'Credentials incorrect' })
+  @Post('login')
+  signIn(@Body() signinDto: SigninDto) {
+    return this.authService.signIn(signinDto.email, signinDto.password);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
+  @Public()
+  @HttpCode(HttpStatus.CREATED)
+  @ApiCreatedResponse({ description: 'Created' })
+  @ApiBadRequestResponse({ description: 'Invalid data provided' })
+  @ApiConflictResponse({ description: 'Email already exists' })
+  @Post('register')
+  register(@Body() registerDto: RegisterDto) {
+    return this.authService.register(registerDto);
   }
 }

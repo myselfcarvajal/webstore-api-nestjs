@@ -6,6 +6,8 @@ import { OrdersModule } from './orders/orders.module';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './config/configuration';
 import { MongooseModule } from '@nestjs/mongoose';
+import { APP_GUARD } from '@nestjs/core';
+import { AccessTokenGuard } from './common/guard/accessToken.guard';
 
 @Module({
   imports: [
@@ -20,6 +22,11 @@ import { MongooseModule } from '@nestjs/mongoose';
     OrdersModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AccessTokenGuard,
+    },
+  ],
 })
 export class AppModule {}
